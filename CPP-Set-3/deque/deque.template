@@ -1,0 +1,149 @@
+//Author:   Nick Seyler
+//Date: 3/9/17
+//File: deque.template
+
+#include <cstdlib>
+#include <cassert>
+#include <iostream>
+
+template <typename T>
+const typename deque<T>::size_type deque<T>::CAPACITY;
+
+template <typename T>
+deque<T>::deque()
+{
+	first = 0;
+	last = CAPACITY - 1;
+	count = 0;
+}
+
+template <typename T>
+T& deque<T>::front()
+{
+	assert(!empty());
+	return data[first];
+}
+
+template <typename T>
+T deque<T>::front() const
+{
+	assert(!empty());
+	return *data[first];
+}
+
+template <typename T>
+T& deque<T>::back()
+{
+	assert(!empty());
+	return data[last];
+}
+
+template <typename T>
+T deque<T>::back() const
+{
+	assert(!empty());
+	return *data[last];
+}
+
+template <typename T>
+void deque<T>::push_front(const T& entry)
+{
+	assert(!full());
+	first = prev_index(first);
+	data[first] = entry;
+	count++;
+}
+
+template <typename T>
+void deque<T>::push_back(const T& entry)
+{
+    assert(!full());
+    last = next_index(last);
+    data[last] = entry;
+    count++;
+}
+
+template <typename T>
+void deque<T>::pop_front()
+{
+	assert(!empty());
+	first = next_index(first);
+    count--;
+}
+
+template <typename T>
+void deque<T>::pop_back()
+{
+	assert(!empty());
+	last = prev_index(last);
+    count--;
+}
+
+template <typename T>
+typename deque<T>::size_type deque<T>::size() const
+{
+	return count;
+}
+
+template <typename T>
+bool deque<T>::empty() const
+{
+	if (size() == 0)
+		return true;
+	else
+		return false;
+}
+
+template <typename T>
+bool deque<T>::full() const
+{
+	if (size() == CAPACITY)
+		return true;
+	else
+		return false;
+}
+
+template <typename U>
+bool operator == (const deque<U>& dq1, const deque<U>& dq2)
+{
+	if (dq1.size() != dq2.size())
+		return false;
+	
+	typename deque<U>::size_type j = dq2.first - 1;
+	   for (unsigned int i = dq1.first; i != dq1.last; i = dq1.next_index(i))
+	   {
+		   j = dq2.next_index(j);
+		
+		   if (dq1.data[i] != dq2.data[j])
+			   return false;
+	   }
+      return true;
+}
+
+template <typename U>
+std::ostream& operator << (std::ostream& out, const deque<U>& dq)
+{
+   if(dq.last != dq.count - 1) //if dq.last is not the last index of the deque
+	   for (unsigned int i = dq.first; i != dq.last + 1 ; i = dq.next_index(i))
+		   out << dq.data[i] << " ";
+	else
+      for (unsigned int i = dq.first; i != 0 ; i = dq.next_index(i))
+		   out << dq.data[i] << " ";
+   
+	return out;
+}
+	
+template <typename T>
+typename deque<T>::size_type deque<T>::next_index(size_type i) const
+{
+	return (i + 1) % CAPACITY;
+}
+
+template <typename T>
+typename deque<T>::size_type deque<T>::prev_index(size_type i) const
+{
+	if (i == 0)
+		return CAPACITY - 1;
+	else
+		return i - 1;
+}
