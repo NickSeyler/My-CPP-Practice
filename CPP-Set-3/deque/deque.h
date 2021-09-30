@@ -1,3 +1,7 @@
+//Author:   Nick Seyler
+//Date: 3/9/17
+//File: deque.h
+
 #ifndef _DEQUE_H_
 #define  _DEQUE_H_
 
